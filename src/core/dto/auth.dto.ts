@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { IsEmail, IsOptional, IsStrongPassword, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsMongoId, IsOptional, IsStrongPassword, MaxLength, MinLength } from "class-validator";
 export class registerDto {
     @MaxLength(20)
     @MinLength(3)
@@ -24,4 +24,15 @@ export class updateUserDto {
     @IsEmail()
     @IsOptional()
     email: string;
+    @IsOptional()
+    @IsMongoId()
+    userId: string
+}
+export class changePasswordDto {
+    @IsStrongPassword()
+    password: string;
+    
+    @IsOptional()
+    @IsMongoId()
+    userId: string
 }

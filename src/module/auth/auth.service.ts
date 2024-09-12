@@ -42,7 +42,7 @@ export class AuthService {
     }
 
     async updateUser(user: any) {
-        const isUserExist = await this.UserModel.findOne({ email: user.email })
+        const isUserExist = await this.UserModel.findOne({ _id: user.userId })
         if (!isUserExist) {
             throw new NotFoundException('user not found')
         }
@@ -56,5 +56,28 @@ export class AuthService {
         if (user.name) {
             isUserExist.name = user.name
         }
+        await isUserExist.save()
+        const token = this._JwtService.sign({
+            userId: isUserExist._id,
+            userEmail: isUserExist.email
+        }, { secret: 'secret', expiresIn: '1d' })
+
+        isUserExist.password = undefined
+        return { message: 'user updated successfully', user: isUserExist, token }
+    }
+    async changePassword(user: any) {
+        const isUserExist = await this.UserModel.findOne({ _id: user.userId })
+        if (!isUserExist) {
+            throw new NotFoundException('user not found')
+        }
+        isUserExist.password = bcrypt.hashSync(user.password, 10)
+        await isUserExist.save()
+        const token = this._JwtService.sign({
+            userId: isUserExist._id,
+            userEmail: isUserExist.email
+        }, { secret: 'secret', expiresIn: '1d' })
+
+        isUserExist.password = undefined
+        return { message: 'password changed successfully', user: isUserExist, token }
     }
 }

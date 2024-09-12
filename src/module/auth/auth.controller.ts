@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Patch, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Patch, Put, Req, UseGuards } from '@nestjs/common';
 import { Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { loginDto, registerDto, updateUserDto } from 'src/core/dto/auth.dto';
+import { changePasswordDto, loginDto, registerDto, updateUserDto } from 'src/core/dto/auth.dto';
 import { AuthGuard } from 'src/core/guard/auth.guard';
 
 @Controller('auth')
@@ -23,13 +23,15 @@ export class AuthController {
 
     @Put('update-user')
     @UseGuards(AuthGuard)
-    async update(@Body() body: updateUserDto): Promise<any> {
+    async update(@Body() body: updateUserDto, @Req() req: any): Promise<any> {
+        body.userId = req.user.userId
         return this._AuthService.updateUser(body);
     }
 
     @Patch('change-password')
-    async changePassword(): Promise<any> {
-        return 'change-password';
+    async changePassword(@Body() body: changePasswordDto, @Req() req: any): Promise<any> {
+        body.userId = req.user.userId
+        return this._AuthService.changePassword(body);
     }
 
     @Delete()
