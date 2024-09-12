@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Patch, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Patch, Put, UseGuards } from '@nestjs/common';
 import { Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { loginDto, registerDto, updateUserDto } from 'src/core/dto/auth.dto';
+import { AuthGuard } from 'src/core/guard/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +22,7 @@ export class AuthController {
     }
 
     @Put('update-user')
+    @UseGuards(AuthGuard)
     async update(@Body() body: updateUserDto): Promise<any> {
         return this._AuthService.updateUser(body);
     }
