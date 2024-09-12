@@ -16,3 +16,10 @@ export class loginDto {
     @IsStrongPassword()
     password: string;
 }
+export class updateUserDto {
+    @MaxLength(20)
+    @MinLength(3)
+    name: string;
+    @IsEmail()
+    email: string;
+}

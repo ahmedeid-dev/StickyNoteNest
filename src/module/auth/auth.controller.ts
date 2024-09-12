@@ -2,7 +2,7 @@
 import { Body, Controller, Delete, Patch, Put } from '@nestjs/common';
 import { Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { loginDto, registerDto } from 'src/core/dto/auth.dto';
+import { loginDto, registerDto, updateUserDto } from 'src/core/dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -20,9 +20,9 @@ export class AuthController {
         return this._AuthService.register(body);
     }
 
-    @Put('update')
-    async update(): Promise<any> {
-        return 'update';
+    @Put('update-user')
+    async update(@Body() body: updateUserDto): Promise<any> {
+        return this._AuthService.updateUser(body);
     }
 
     @Patch('change-password')

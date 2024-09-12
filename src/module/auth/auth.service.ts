@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -39,5 +39,22 @@ export class AuthService {
 
         isUserExist.password = undefined
         return { message: 'login successfully ', token }
+    }
+
+    async updateUser(user: any) {
+        const isUserExist = await this.UserModel.findOne({ email: user.email })
+        if (!isUserExist) {
+            throw new NotFoundException('user not found')
+        }
+        if (user.email) {
+            const isEmailExist = await this.UserModel.findOne({ email: user.email })
+            if (isEmailExist) {
+                throw new ConflictException('email already exist')
+            }
+            isUserExist.email = user.email
+        }
+        if (user.name) {
+            isUserExist.name = user.name
+        }
     }
 }
